@@ -104,7 +104,7 @@ async fn handler(
     };
 
     let chat_id = format!("PR#{pull_number}");
-    let system = &format!("You are a senior software developer. You will review a source code file and its patch related to the subject of \"{}\".", title);
+    let system = &format!("You are a princpal application security enginner. You will review a source code file and its patch related to the subject of \"{}\".", title);
     let mut openai = OpenAIFlows::new();
     openai.set_retry_times(3);
 
@@ -129,7 +129,7 @@ async fn handler(
         }
     } else {
         // PR OPEN or Trigger phrase: create a new comment
-        match issues.create_comment(pull_number, "Hello, I am a [code review bot](https://github.com/flows-network/github-pr-review/) on [flows.network](https://flows.network/).\n\nIt could take a few minutes for me to analyze this PR. Relax, grab a cup of coffee and check back later. Thanks!").await {
+        match issues.create_comment(pull_number, "Hello, I am a secuirty review bot on [flows.network](https://flows.network/).\n\nIt could take a few minutes for me to analyze this PR. Relax, grab a cup of coffee and check back later. Thanks!").await {
             Ok(comment) => {
                 comment_id = comment.id;
             }
@@ -143,7 +143,7 @@ async fn handler(
 
     let pulls = octo.pulls(owner, repo);
     let mut resp = String::new();
-    resp.push_str("Hello, I am a [code review bot](https://github.com/flows-network/github-pr-review/) on [flows.network](https://flows.network/). Here are my reviews of changed source code files in this PR.\n\n------\n\n");
+    resp.push_str("Hello, I am a secuirty review bot on [flows.network](https://flows.network/). Here are my reviews of changed source code files in this PR.\n\n------\n\n");
     match pulls.list_files(pull_number).await {
         Ok(files) => {
             for f in files.items {
@@ -188,7 +188,7 @@ async fn handler(
                     restart: true,
                     system_prompt: Some(system),
                 };
-                let question = "Review the following source code and look for potential problems. The code might be truncated. So, do NOT comment on the completeness of the source code.\n\n".to_string() + t_file_as_text;
+                let question = "Review the following source code and look for secuirty issues. The code might be truncated. So, do NOT comment on the completeness of the source code.\n\n".to_string() + t_file_as_text;
                 match openai.chat_completion(&chat_id, &question, &co).await {
                     Ok(r) => {
                         resp.push_str(&r.choice);
@@ -208,7 +208,7 @@ async fn handler(
                 };
                 let patch_as_text = f.patch.unwrap_or("".to_string());
                 let t_patch_as_text = truncate(&patch_as_text, CHAR_SOFT_LIMIT);
-                let question = "The following is a patch. Please summarize key changes.\n\n".to_string() + t_patch_as_text;
+                let question = "The following is a patch. Please recommand updated secure version of the code.\n\n".to_string() + t_patch_as_text;
                 match openai.chat_completion(&chat_id, &question, &co).await {
                     Ok(r) => {
                         resp.push_str(&r.choice);
