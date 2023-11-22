@@ -19,8 +19,8 @@ use std::env;
 //  The soft character limit of the input context size
 //   the max token size or word count for GPT4 is 8192
 //   the max token size or word count for GPT35Turbo is 4096
-static CHAR_SOFT_LIMIT : usize = 9000;
-static MODEL : ChatModel = ChatModel::GPT35Turbo;
+static CHAR_SOFT_LIMIT : usize = 128000;
+static MODEL : ChatModel = ChatModel::GPT4Turbo;
 // static MODEL : ChatModel = ChatModel::GPT4;
 
 #[no_mangle]
